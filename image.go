@@ -20,7 +20,7 @@ type Image struct {
 	Vendor      string    `json:"vendor"`
 	Deprecated  bool      `json:"deprecated"`
 	CreatedBy   string    `json:"created_by"`
-	Created     string    `json:"created"`
+	Created     Time      `json:"created"`
 }
 
 // A NewImageRequest contains the fields necessary to build a new image.

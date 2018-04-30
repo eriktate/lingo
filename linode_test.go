@@ -40,6 +40,10 @@ func Test_Integration_Linodes(t *testing.T) {
 		t.Fatalf("Failed to fetch linode1: %s", err)
 	}
 
+	if _, err := client.GetTypes(); err != nil {
+		t.Fatalf("Failed to fetch linode types: %s", err)
+	}
+
 	linodes, err := client.GetLinodes()
 	if err != nil {
 		t.Fatalf("Failed to fetch linodes: %s", err)
@@ -49,23 +53,91 @@ func Test_Integration_Linodes(t *testing.T) {
 		t.Fatalf("Failed to retrieve any linodes")
 	}
 
-	if err := client.ShutdownLinode(created2.ID); err != nil {
-		t.Fatalf("Failed to shutdown linode2: %s", err)
-	}
-
-	if err := client.BootLinode(created2.ID); err != nil {
-		t.Fatalf("Failed to boot linode2: %s", err)
-	}
-
-	if err := client.RebootLinode(created1.ID); err != nil {
-		t.Fatalf("Failed to reboot linode1: %s", err)
-	}
-
 	if err := client.DeleteLinode(created1.ID); err != nil {
 		t.Fatalf("Failed to delete linode1: %s", err)
 	}
 
 	if err := client.DeleteLinode(created2.ID); err != nil {
 		t.Fatalf("Failed to delete linode2: %s", err)
+	}
+}
+
+func Test_GetTypes(t *testing.T) {
+	apiKey := os.Getenv("LINODE_API_KEY")
+	client := lingo.NewClient(apiKey)
+
+	types, err := client.GetTypes()
+	if err != nil {
+		t.Fatalf("Failed to GetTypes: %s", err)
+	}
+
+	if len(types) > 0 {
+		ltype, err := client.GetType(types[0].ID)
+		if err != nil {
+			t.Fatalf("Failed to GetType: %s", err)
+		}
+
+		if ltype.Label != types[0].Label {
+			t.Fatal("Type doesn't match Types slice")
+		}
+	}
+}
+
+func Test_BootLinode(t *testing.T) {
+	apiKey := os.Getenv("LINODE_API_KEY")
+	client := lingo.NewClient(apiKey)
+
+	createLinode := lingo.NewLinode{
+		Region:   "us-east-1a",
+		Type:     "g5-nanode-1",
+		Image:    "linode/debian9",
+		RootPass: "test123",
+	}
+
+	testLinode, err := client.CreateLinode(createLinode)
+	if err != nil {
+		t.Fatalf("Failed to create linode: %s", err)
+	}
+
+	if err := client.BootLinode(testLinode.ID); err != nil {
+		t.Fatalf("Failed to boot linode: %s", err)
+	}
+
+	if err := client.RebootLinode(testLinode.ID); err != nil {
+		t.Fatalf("Failed to reboot linode: %s", err)
+	}
+
+	if err := client.ShutdownLinode(testLinode.ID); err != nil {
+		t.Fatalf("Failed to shutdown linode: %s", err)
+	}
+
+	if err := client.DeleteLinode(testLinode.ID); err != nil {
+		t.Fatalf("Failed to cleanup: %s", err)
+	}
+}
+
+func Test_ResizeLinode(t *testing.T) {
+	apiKey := os.Getenv("LINODE_API_KEY")
+	client := lingo.NewClient(apiKey)
+
+	newType := "g5-standard-1"
+	createLinode := lingo.NewLinode{
+		Region:   "us-east-1a",
+		Type:     "g5-nanode-1",
+		Image:    "linode/debian9",
+		RootPass: "test123",
+	}
+
+	testLinode, err := client.CreateLinode(createLinode)
+	if err != nil {
+		t.Fatalf("Failed to create linode: %s", err)
+	}
+
+	if err := client.ResizeLinode(testLinode.ID, newType); err != nil {
+		t.Fatalf("Failed to resize linode: %s", err)
+	}
+
+	if err := client.DeleteLinode(testLinode.ID); err != nil {
+		t.Fatalf("Failed to cleanup: %s", err)
 	}
 }

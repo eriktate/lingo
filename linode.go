@@ -70,7 +70,50 @@ type NewLinode struct {
 	Booted          bool            `json:"booted"`
 }
 
+type Class string
+
+const (
+	ClassNanode   = Class("nanode")
+	ClassStandard = Class("standard")
+	ClassHighmem  = Class("highmem")
+)
+
+type Price struct {
+	Hourly  float32 `json:"hourly"`
+	Monthly float32 `json:"monthly"`
+}
+
+type Addons struct {
+	Backups struct {
+		Price Price `json:"price"`
+	} `json:"backups"`
+}
+
+type LinodeType struct {
+	ID         string `json:"id"`
+	Disk       int    `json:"disk"`
+	Class      Class  `json:"class"`
+	Price      Price  `json:"price"`
+	Label      string `json:"label"`
+	Addons     Addons `json:"addons"`
+	NetworkOut uint   `json:"network_out"`
+	Memory     uint   `json:"memory"`
+	Transfer   uint   `json:"transfer"`
+	Vcpus      uint   `json:"vcpus"`
+}
+
 type Linoder interface {
 	GetLinodes() ([]Linode, error)
-	CreateLinode(linodw NewLinode) (Linode, error)
+	GetLinode(id uint) (Linode, error)
+	CreateLinode(linode NewLinode) (Linode, error)
+	DeleteLinode(id uint) error
+	BootLinode(id uint) error
+	BootLinodeWithConfig(id, configID uint) error
+	RebootLinode(id uint) error
+	RebootLinodeWithConfig(id, configID uint) error
+	ShutdownLinode(id uint) error
+	GetTypes() ([]LinodeType, error)
+	GetType(id string) (LinodeType, error)
+	ResizeLinode(id uint, typeID string) error
+	Mutate(id uint) error
 }

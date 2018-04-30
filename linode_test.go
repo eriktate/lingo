@@ -49,6 +49,18 @@ func Test_Integration_Linodes(t *testing.T) {
 		t.Fatalf("Failed to retrieve any linodes")
 	}
 
+	if err := client.ShutdownLinode(created2.ID); err != nil {
+		t.Fatalf("Failed to shutdown linode2: %s", err)
+	}
+
+	if err := client.BootLinode(created2.ID); err != nil {
+		t.Fatalf("Failed to boot linode2: %s", err)
+	}
+
+	if err := client.RebootLinode(created1.ID); err != nil {
+		t.Fatalf("Failed to reboot linode1: %s", err)
+	}
+
 	if err := client.DeleteLinode(created1.ID); err != nil {
 		t.Fatalf("Failed to delete linode1: %s", err)
 	}

@@ -352,6 +352,114 @@ func (c Client) DeleteLinode(id uint) error {
 	return nil
 }
 
+func (c Client) BootLinode(id uint) error {
+	req, err := c.makePostRequest(fmt.Sprintf("linode/instances/%d/boot", id), nil)
+	if err != nil {
+		return errors.Wrap(err, "failed to create request for BootLinode")
+	}
+
+	res, err := c.h.Do(req)
+	if err != nil {
+		return errors.Wrap(err, "failed to complete BootLinode request")
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return errors.Wrap(err, "failed to BootLinode")
+	}
+
+	return nil
+}
+
+func (c Client) BootLinodeWithConfig(id, configID uint) error {
+	config := struct {
+		ConfigID uint `json:"config_id"`
+	}{configID}
+
+	data, err := json.Marshal(config)
+	if err != nil {
+		return errors.Wrap(err, "failed to marshal request for BootLinodeWithConfig")
+	}
+
+	req, err := c.makePostRequest(fmt.Sprintf("linode/instances/%d/boot", id), data)
+	if err != nil {
+		return errors.Wrap(err, "failed to create request for BootLinode")
+	}
+
+	res, err := c.h.Do(req)
+	if err != nil {
+		return errors.Wrap(err, "failed to complete BootLinode request")
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return errors.Wrap(err, "failed to BootLinode")
+	}
+
+	return nil
+}
+
+func (c Client) RebootLinode(id uint) error {
+	req, err := c.makePostRequest(fmt.Sprintf("linode/instances/%d/reboot", id), nil)
+	if err != nil {
+		return errors.Wrap(err, "failed to create request for RebootLinode")
+	}
+
+	res, err := c.h.Do(req)
+	if err != nil {
+		return errors.Wrap(err, "failed to complete RebootLinode request")
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return errors.Wrap(err, "failed to RebootLinode")
+	}
+
+	return nil
+}
+
+func (c Client) RebootLinodeWithConfig(id, configID uint) error {
+	config := struct {
+		ConfigID uint `json:"config_id"`
+	}{configID}
+
+	data, err := json.Marshal(config)
+	if err != nil {
+		return errors.Wrap(err, "failed to marshal request for RebootLinodeWithConfig")
+	}
+
+	req, err := c.makePostRequest(fmt.Sprintf("linode/instances/%d/reboot", id), data)
+	if err != nil {
+		return errors.Wrap(err, "failed to create request for RebootLinode")
+	}
+
+	res, err := c.h.Do(req)
+	if err != nil {
+		return errors.Wrap(err, "failed to complete RebootLinode request")
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return errors.Wrap(err, "failed to RebootLinode")
+	}
+
+	return nil
+}
+
+func (c Client) ShutdownLinode(id uint) error {
+	req, err := c.makePostRequest(fmt.Sprintf("linode/instances/%d/shutdown", id), nil)
+	if err != nil {
+		return errors.Wrap(err, "failed to create request for ShutdownLinode")
+	}
+
+	res, err := c.h.Do(req)
+	if err != nil {
+		return errors.Wrap(err, "failed to complete ShutdownLinode request")
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return errors.Wrap(err, "failed to ShutdownLinode")
+	}
+
+	return nil
+}
+
 func (c Client) makeGetRequest(path string) (*http.Request, error) {
 	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", baseURI, path), nil)
 	if err != nil {

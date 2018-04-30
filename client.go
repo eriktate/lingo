@@ -3,7 +3,6 @@ package lingo
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -57,8 +56,6 @@ func (c Client) GetImages() ([]Image, error) {
 		return nil, errors.Wrap(err, "failed to decode GetImages response")
 	}
 
-	log.Printf("Data: %s", string(results.Data))
-
 	// TODO: Do something with paging here?
 	var images []Image
 	if err := json.Unmarshal(results.Data, &images); err != nil {
@@ -66,6 +63,58 @@ func (c Client) GetImages() ([]Image, error) {
 	}
 
 	return images, nil
+}
+
+func (c Client) GetRegions() ([]Region, error) {
+	req, err := c.makeGetRequest("regions")
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create request for GetRegions")
+	}
+
+	res, err := c.h.Do(req)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to complete GetRegions request")
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return nil, errors.Wrap(err, "failed to GetRegions")
+	}
+
+	var results Results
+	if err := json.NewDecoder(res.Body).Decode(&results); err != nil {
+		return nil, errors.Wrap(err, "failed to decode GetRegions response")
+	}
+
+	var regions []Region
+	if err := json.Unmarshal(results.Data, &regions); err != nil {
+		return nil, errors.Wrap(err, "failed to unmarshal GetRegions data")
+	}
+
+	return regions, nil
+}
+
+func (c Client) GetRegion(id string) (Region, error) {
+	var region Region
+
+	req, err := c.makeGetRequest("regions/" + id)
+	if err != nil {
+		return region, errors.Wrap(err, "failed to create request for GetRegion")
+	}
+
+	res, err := c.h.Do(req)
+	if err != nil {
+		return region, errors.Wrap(err, "failed to complete GetRegion request")
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return region, errors.Wrap(err, "failed to GetRegion")
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&region); err != nil {
+		return region, errors.Wrap(err, "failed to decode GetRegion response")
+	}
+
+	return region, nil
 }
 
 func (c Client) makeGetRequest(path string) (*http.Request, error) {

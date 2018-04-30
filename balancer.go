@@ -19,8 +19,16 @@ type NodeBalancer struct {
 	Transfer           Transfer
 }
 
-type CreateNodeBalancerRequest struct {
+type CreateBalancerRequest struct {
 	Region             string `json:"region"`
+	Label              string `json:"label,omitempty"`
+	ClientConnThrottle uint   `json:"client_conn_throttle,omitempty"`
+}
+
+// TODO: Not sure if I prefer the approach of including the ID in this
+// struct, or providing to functions that need it.
+type UpdateBalancerRequest struct {
+	ID                 uint   `json:"-"`
 	Label              string `json:"label,omitempty"`
 	ClientConnThrottle uint   `json:"client_conn_throttle,omitempty"`
 }
@@ -28,6 +36,7 @@ type CreateNodeBalancerRequest struct {
 type Balancer interface {
 	GetNodeBalancers() ([]NodeBalancer, error)
 	GetNodeBalancer(id string) (NodeBalancer, error)
-	CreateNodeBalancer(req CreateNodeBalancerRequest) (NodeBalancer, error)
+	CreateNodeBalancer(req CreateBalancerRequest) (NodeBalancer, error)
+	UpdateNodeBalancer(req UpdateBalancerRequest) (NodeBalancer, error)
 	DeleteNodeBalancer(id string) error
 }

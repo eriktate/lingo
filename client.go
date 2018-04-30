@@ -189,7 +189,7 @@ func (c Client) DeleteNodeBalancer(id uint) error {
 	return nil
 }
 
-func (c Client) CreateNodeBalancer(request CreateNodeBalancerRequest) (NodeBalancer, error) {
+func (c Client) CreateNodeBalancer(request CreateBalancerRequest) (NodeBalancer, error) {
 	var created NodeBalancer
 
 	data, err := json.Marshal(&request)
@@ -220,6 +220,37 @@ func (c Client) CreateNodeBalancer(request CreateNodeBalancerRequest) (NodeBalan
 	return created, nil
 }
 
+func (c Client) UpdateNodeBalancer(request UpdateBalancerRequest) (NodeBalancer, error) {
+	var created NodeBalancer
+
+	data, err := json.Marshal(&request)
+	if err != nil {
+		return created, errors.Wrap(err, "failed to marshal request for UpdateNodeBalancer")
+	}
+
+	req, err := c.makePutRequest(fmt.Sprintf("nodebalancers/%d", request.ID), data)
+	if err != nil {
+		return created, errors.Wrap(err, "failed to create request for UpdateNodeBalancer")
+	}
+
+	res, err := c.h.Do(req)
+	if err != nil {
+		return created, errors.Wrap(err, "failed to complete UpdateNodeBalancer request")
+	}
+
+	if res.StatusCode != http.StatusOK {
+		errorText, _ := ioutil.ReadAll(res.Body)
+		log.Println(string(errorText))
+		return created, errors.New("failed to UpdateNodeBalancer")
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&created); err != nil {
+		return created, errors.Wrap(err, "failed to decode UpdateNodeBalancer response")
+	}
+
+	return created, nil
+}
+
 func (c Client) makeGetRequest(path string) (*http.Request, error) {
 	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s%s", baseURI, path), nil)
 	if err != nil {
@@ -233,6 +264,18 @@ func (c Client) makeGetRequest(path string) (*http.Request, error) {
 
 func (c Client) makePostRequest(path string, data []byte) (*http.Request, error) {
 	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s%s", baseURI, path), bytes.NewBuffer(data))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Authorization", "Bearer "+c.apiKey)
+	req.Header.Set("Content-Type", "application/json")
+
+	return req, nil
+}
+
+func (c Client) makePutRequest(path string, data []byte) (*http.Request, error) {
+	req, err := http.NewRequest(http.MethodPut, fmt.Sprintf("%s%s", baseURI, path), bytes.NewBuffer(data))
 	if err != nil {
 		return nil, err
 	}

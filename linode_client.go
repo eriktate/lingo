@@ -8,8 +8,11 @@ import (
 )
 
 type LinodeClient struct {
-	apiKey string
-	api    APIClient
+	api APIClient
+}
+
+func NewLinodeClient(api APIClient) LinodeClient {
+	return LinodeClient{api: api}
 }
 
 func (c LinodeClient) CreateLinode(linode NewLinode) (Linode, error) {

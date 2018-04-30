@@ -9,7 +9,8 @@ import (
 
 func Test_Integration_Linodes(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	client := lingo.NewClient(apiKey)
+	api := lingo.NewAPIClient(apiKey)
+	client := lingo.NewLinodeClient(api)
 
 	createLinode1 := lingo.NewLinode{
 		Region:   "us-east-1a",
@@ -64,7 +65,8 @@ func Test_Integration_Linodes(t *testing.T) {
 
 func Test_GetTypes(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	client := lingo.NewClient(apiKey)
+	api := lingo.NewAPIClient(apiKey)
+	client := lingo.NewLinodeClient(api)
 
 	types, err := client.GetTypes()
 	if err != nil {
@@ -85,7 +87,8 @@ func Test_GetTypes(t *testing.T) {
 
 func Test_BootLinode(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	client := lingo.NewClient(apiKey)
+	api := lingo.NewAPIClient(apiKey)
+	client := lingo.NewLinodeClient(api)
 
 	createLinode := lingo.NewLinode{
 		Region:   "us-east-1a",
@@ -118,7 +121,8 @@ func Test_BootLinode(t *testing.T) {
 
 func Test_ResizeLinode(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	client := lingo.NewClient(apiKey)
+	api := lingo.NewAPIClient(apiKey)
+	client := lingo.NewLinodeClient(api)
 
 	newType := "g5-standard-1"
 	createLinode := lingo.NewLinode{

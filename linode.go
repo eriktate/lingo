@@ -140,4 +140,5 @@ type Linoder interface {
 	Mutate(id uint) error
 	CloneLinode(req CloneRequest) (Linode, error)
 	RebuildLinode(req RebuildRequest) error
+	GetLinodeVolumes(id uint) ([]Volume, error)
 }

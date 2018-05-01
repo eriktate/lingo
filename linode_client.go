@@ -237,3 +237,22 @@ func (c LinodeClient) RebuildLinode(req RebuildRequest) (Linode, error) {
 
 	return linode, nil
 }
+
+func (c LinodeClient) GetLinodeVolumes(id uint) ([]Volume, error) {
+	data, err := c.api.Get(fmt.Sprintf("linode/%d/volumes", id))
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to make request for GetLinodeVolumes")
+	}
+
+	var results Results
+	if err := json.Unmarshal(data, &results); err != nil {
+		return nil, errors.Wrap(err, "failed to unmarshal GetLinodeVolumes response")
+	}
+
+	var volumes []Volume
+	if err := json.Unmarshal(results.Data, &volumes); err != nil {
+		return nil, errors.Wrap(err, "failed to unmarshal GetLinodeVolumes data")
+	}
+
+	return volumes, nil
+}

@@ -20,7 +20,7 @@ type APIClient struct {
 	h      *http.Client
 }
 
-// Results is the envelope format for most GET requests.
+// Results is the envelope format for GET requests that return paged data.
 type Results struct {
 	Data    json.RawMessage `json:"data"`
 	Page    uint            `json:"page"`

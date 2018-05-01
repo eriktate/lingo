@@ -70,6 +70,28 @@ type NewLinode struct {
 	Booted          bool            `json:"booted"`
 }
 
+type CloneRequest struct {
+	ID             uint     `json:"-"`
+	Region         string   `json:"region"`
+	Type           string   `json:"type"`
+	Label          string   `json:"label,omitempty"`
+	Group          string   `json:"group,omitempty"`
+	LinodeID       uint     `json:"linode_id,omitempty"`
+	BackupsEnabled bool     `json:"backups_enabled"`
+	Disks          []string `json:"disks,omitempty"`
+	Configs        []string `json:"configs,omitempty"`
+}
+
+type RebuildRequest struct {
+	ID              uint            `json:"-"`
+	Image           string          `json:"image"`
+	RootPass        string          `json:"root_pass"`
+	AuthorizedKeys  []string        `json:"authorized_keys,omitempty"`
+	StackScriptID   uint            `json:"stackscript_id,omitempty"`
+	StackscriptData json.RawMessage `json:"stackscript_data,omitempty"`
+	Booted          bool            `json:"booted"`
+}
+
 type Class string
 
 const (
@@ -116,4 +138,6 @@ type Linoder interface {
 	GetType(id string) (LinodeType, error)
 	ResizeLinode(id uint, typeID string) error
 	Mutate(id uint) error
+	CloneLinode(req CloneRequest) error
+	RebuildLinode(req RebuildRequest) error
 }

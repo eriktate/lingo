@@ -3,6 +3,7 @@ package lingo
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 
 	"github.com/pkg/errors"
 )
@@ -181,7 +182,7 @@ func (c LinodeClient) ResizeLinode(id uint, typeID string) error {
 	}
 
 	if _, err := c.api.Post(fmt.Sprintf("linode/instances/%d/resize", id), payload); err != nil {
-		return errors.Wrap(err, "failed to create request for GetTypes")
+		return errors.Wrap(err, "failed to make request for ResizeLinode")
 	}
 
 	return nil
@@ -191,6 +192,40 @@ func (c LinodeClient) Mutate(id uint, typeID string) error {
 	if _, err := c.api.Post(fmt.Sprintf("linode/instances/%d/mutate", id), nil); err != nil {
 		return errors.Wrap(err, "failed to create request for Mutate")
 	}
+
+	return nil
+}
+
+func (c LinodeClient) CloneLinode(req CloneRequest) error {
+	payload, err := json.Marshal(req)
+	if err != nil {
+		return errors.Wrap(err, "failed to marshal request for CloneLinode")
+	}
+
+	data, err := c.api.Post(fmt.Sprintf("linode/instances/%d/clone", req.ID), payload)
+	if err != nil {
+		return errors.Wrap(err, "failed to make request for CloneLinode")
+	}
+
+	// TODO: Remove once I know what this returns
+	log.Printf("CloneLinode result: %s", string(data))
+
+	return nil
+}
+
+func (c LinodeClient) RebuildLinode(req RebuildRequest) error {
+	payload, err := json.Marshal(req)
+	if err != nil {
+		return errors.Wrap(err, "failed to marshal request for RebuildLinode")
+	}
+
+	data, err := c.api.Post(fmt.Sprintf("linode/instances/%d/rebuild", req.ID), payload)
+	if err != nil {
+		return errors.Wrap(err, "failed to make request for RebuildLinode")
+	}
+
+	// TODO: Remove once I know what this returns
+	log.Printf("RebuildLinode result: %s", string(data))
 
 	return nil
 }

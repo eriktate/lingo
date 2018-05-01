@@ -23,6 +23,13 @@ type Image struct {
 	Created     Time      `json:"created"`
 }
 
+// A NewImage packages up the fields required for creating a new Image.
+type NewImage struct {
+	DiskID      uint   `json:"disk_id"`
+	Label       string `json:"label,omitempty"`
+	Description string `json:"description,omitempty"`
+}
+
 // A NewImageRequest contains the fields necessary to build a new image.
 type NewImageRequest struct {
 	DiskID      string `json:"disk_id"`

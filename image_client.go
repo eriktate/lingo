@@ -34,3 +34,23 @@ func (c ImageClient) GetImages() ([]Image, error) {
 
 	return images, nil
 }
+
+// CreateImage creates a new machine image from an existing Linode disk.
+func (c ImageClient) CreateImage(req NewImage) (Image, error) {
+	var image Image
+	payload, err := json.Marshal(req)
+	if err != nil {
+		return image, errors.Wrap(err, "failed to marshal request for CreateImage")
+	}
+
+	data, err := c.api.Post("images", payload)
+	if err != nil {
+		return image, errors.Wrap(err, "failed to make request for CreateImage")
+	}
+
+	if err := json.Unmarshal(data, &image); err != nil {
+		return image, errors.Wrap(err, "failed to decode CreateImage response")
+	}
+
+	return image, nil
+}

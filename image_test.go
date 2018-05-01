@@ -7,7 +7,7 @@ import (
 	"github.com/eriktate/lingo"
 )
 
-func Test_Integration_Images(t *testing.T) {
+func Test_GetImages(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
 	api := lingo.NewAPIClient(apiKey)
 	client := lingo.NewImageClient(api)

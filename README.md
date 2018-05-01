@@ -1,5 +1,5 @@
 # lingo
-Go bindings for the Linode API
+Go client library for the Linode API.
 
 # WIP
 This is under active development and should probably not be used in any way for the time being.

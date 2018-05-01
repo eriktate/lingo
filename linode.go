@@ -138,6 +138,6 @@ type Linoder interface {
 	GetType(id string) (LinodeType, error)
 	ResizeLinode(id uint, typeID string) error
 	Mutate(id uint) error
-	CloneLinode(req CloneRequest) error
+	CloneLinode(req CloneRequest) (Linode, error)
 	RebuildLinode(req RebuildRequest) error
 }

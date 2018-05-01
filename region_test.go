@@ -9,7 +9,8 @@ import (
 
 func Test_Integration_Regions(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	client := lingo.NewClient(apiKey)
+	api := lingo.NewAPIClient(apiKey)
+	client := lingo.NewRegionClient(api)
 
 	if _, err := client.GetRegions(); err != nil {
 		t.Fatalf("Failed to GetRegions: %s", err)

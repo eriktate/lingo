@@ -1,8 +1,10 @@
 package lingo_test
 
 import (
+	"log"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/eriktate/lingo"
 )
@@ -95,6 +97,7 @@ func Test_BootLinode(t *testing.T) {
 		Type:     "g5-nanode-1",
 		Image:    "linode/debian9",
 		RootPass: "test123",
+		Booted:   true,
 	}
 
 	testLinode, err := client.CreateLinode(createLinode)
@@ -102,16 +105,22 @@ func Test_BootLinode(t *testing.T) {
 		t.Fatalf("Failed to create linode: %s", err)
 	}
 
+	waitUntilRunning(client, testLinode.ID)
+
+	if err := client.ShutdownLinode(testLinode.ID); err != nil {
+		t.Fatalf("Failed to shutdown linode: %s", err)
+	}
+
+	waitUntilOffline(client, testLinode.ID)
+
 	if err := client.BootLinode(testLinode.ID); err != nil {
 		t.Fatalf("Failed to boot linode: %s", err)
 	}
 
+	waitUntilRunning(client, testLinode.ID)
+
 	if err := client.RebootLinode(testLinode.ID); err != nil {
 		t.Fatalf("Failed to reboot linode: %s", err)
-	}
-
-	if err := client.ShutdownLinode(testLinode.ID); err != nil {
-		t.Fatalf("Failed to shutdown linode: %s", err)
 	}
 
 	if err := client.DeleteLinode(testLinode.ID); err != nil {
@@ -130,12 +139,15 @@ func Test_ResizeLinode(t *testing.T) {
 		Type:     "g5-nanode-1",
 		Image:    "linode/debian9",
 		RootPass: "test123",
+		Booted:   true,
 	}
 
 	testLinode, err := client.CreateLinode(createLinode)
 	if err != nil {
 		t.Fatalf("Failed to create linode: %s", err)
 	}
+
+	waitUntilRunning(client, testLinode.ID)
 
 	if err := client.ResizeLinode(testLinode.ID, newType); err != nil {
 		t.Fatalf("Failed to resize linode: %s", err)
@@ -144,4 +156,106 @@ func Test_ResizeLinode(t *testing.T) {
 	if err := client.DeleteLinode(testLinode.ID); err != nil {
 		t.Fatalf("Failed to cleanup: %s", err)
 	}
+}
+
+func Test_CloneLinode(t *testing.T) {
+	apiKey := os.Getenv("LINODE_API_KEY")
+	api := lingo.NewAPIClient(apiKey)
+	client := lingo.NewLinodeClient(api)
+
+	createLinode := lingo.NewLinode{
+		Region:   "us-east-1a",
+		Type:     "g5-nanode-1",
+		Image:    "linode/debian9",
+		RootPass: "test123",
+		Booted:   true,
+	}
+
+	log.Println("Creating linode to clone...")
+	testLinode, err := client.CreateLinode(createLinode)
+	if err != nil {
+		t.Fatalf("Failed to create linode: %s", err)
+	}
+
+	cloneRequest := lingo.CloneRequest{
+		ID:     testLinode.ID,
+		Region: testLinode.Region,
+		Type:   testLinode.Type,
+	}
+
+	waitUntilRunning(client, testLinode.ID)
+
+	log.Println("Cloning linode...")
+	clone, err := client.CloneLinode(cloneRequest)
+	if err != nil {
+		t.Fatalf("Failed to create linode: %s", err)
+	}
+
+	if err := client.DeleteLinode(testLinode.ID); err != nil {
+		t.Fatalf("Failed to clean up")
+	}
+
+	if err := client.DeleteLinode(clone.ID); err != nil {
+		t.Fatalf("Failed to clean up")
+	}
+}
+
+func Test_RebuildLinode(t *testing.T) {
+	apiKey := os.Getenv("LINODE_API_KEY")
+	api := lingo.NewAPIClient(apiKey)
+	client := lingo.NewLinodeClient(api)
+
+	createLinode := lingo.NewLinode{
+		Region:   "us-east-1a",
+		Type:     "g5-nanode-1",
+		Image:    "linode/debian9",
+		RootPass: "test123",
+		Booted:   true,
+	}
+
+	log.Println("Creating linode to rebuild...")
+	testLinode, err := client.CreateLinode(createLinode)
+	if err != nil {
+		t.Fatalf("Failed to create linode: %s", err)
+	}
+
+	rebuildRequest := lingo.RebuildRequest{
+		ID:       testLinode.ID,
+		Image:    "linode/centos7",
+		RootPass: "test123",
+	}
+
+	waitUntilRunning(client, testLinode.ID)
+
+	log.Println("Rebuilding linode...")
+	if _, err := client.RebuildLinode(rebuildRequest); err != nil {
+		t.Fatalf("Failed to rebuild linode: %s", err)
+	}
+
+	if err := client.DeleteLinode(testLinode.ID); err != nil {
+		t.Fatalf("Failed to clean up")
+	}
+
+}
+func waitUntilRunning(client lingo.LinodeClient, id uint) error {
+	return waitUntil(client, id, lingo.StatusRunning)
+}
+
+func waitUntilOffline(client lingo.LinodeClient, id uint) error {
+	return waitUntil(client, id, lingo.StatusOffline)
+}
+
+func waitUntil(client lingo.LinodeClient, id uint, status lingo.Status) error {
+	linode, err := client.GetLinode(id)
+	if err != nil {
+		return err
+	}
+
+	if linode.Status != status {
+		log.Printf("Waiting for %s...", status)
+		time.Sleep(5 * time.Second)
+		waitUntil(client, id, status)
+	}
+
+	return nil
 }

@@ -196,36 +196,63 @@ func (c LinodeClient) Mutate(id uint, typeID string) error {
 	return nil
 }
 
-func (c LinodeClient) CloneLinode(req CloneRequest) error {
+func (c LinodeClient) CloneLinode(req CloneRequest) (Linode, error) {
+	var clone Linode
+
 	payload, err := json.Marshal(req)
 	if err != nil {
-		return errors.Wrap(err, "failed to marshal request for CloneLinode")
+		return clone, errors.Wrap(err, "failed to marshal request for CloneLinode")
 	}
 
 	data, err := c.api.Post(fmt.Sprintf("linode/instances/%d/clone", req.ID), payload)
 	if err != nil {
-		return errors.Wrap(err, "failed to make request for CloneLinode")
+		return clone, errors.Wrap(err, "failed to make request for CloneLinode")
 	}
 
-	// TODO: Remove once I know what this returns
-	log.Printf("CloneLinode result: %s", string(data))
+	if err := json.Unmarshal(data, &clone); err != nil {
+		return clone, errors.Wrap(err, "failed to unmarshal CloneLinode data")
+	}
 
-	return nil
+	return clone, nil
 }
 
-func (c LinodeClient) RebuildLinode(req RebuildRequest) error {
+func (c LinodeClient) RebuildLinode(req RebuildRequest) (Linode, error) {
+	var linode Linode
+
 	payload, err := json.Marshal(req)
 	if err != nil {
-		return errors.Wrap(err, "failed to marshal request for RebuildLinode")
+		return linode, errors.Wrap(err, "failed to marshal request for RebuildLinode")
 	}
 
 	data, err := c.api.Post(fmt.Sprintf("linode/instances/%d/rebuild", req.ID), payload)
 	if err != nil {
-		return errors.Wrap(err, "failed to make request for RebuildLinode")
+		return linode, errors.Wrap(err, "failed to make request for RebuildLinode")
 	}
 
 	// TODO: Remove once I know what this returns
 	log.Printf("RebuildLinode result: %s", string(data))
+	if err := json.Unmarshal(data, &linode); err != nil {
+		return linode, errors.Wrap(err, "failed to unmarshal RebuildLinode data")
+	}
 
-	return nil
+	return linode, nil
+}
+
+func (c LinodeClient) GetLinodeVolumes(id uint) ([]Volume, error) {
+	data, err := c.api.Get(fmt.Sprintf("linode/%d/volumes", id))
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to make request for GetLinodeVolumes")
+	}
+
+	var results Results
+	if err := json.Unmarshal(data, &results); err != nil {
+		return nil, errors.Wrap(err, "failed to unmarshal GetLinodeVolumes response")
+	}
+
+	var volumes []Volume
+	if err := json.Unmarshal(results.Data, &volumes); err != nil {
+		return nil, errors.Wrap(err, "failed to unmarshal GetLinodeVolumes data")
+	}
+
+	return volumes, nil
 }

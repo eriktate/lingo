@@ -175,7 +175,7 @@ func (c DomainClient) UpdateDomainRecord(domainID uint, record DomainRecord) (Do
 		return updated, errors.Wrap(err, "failed to marshal request for UpdateDomainRecord")
 	}
 
-	data, err := c.api.Put(fmt.Sprintf("domains/%d/records", domainID), payload)
+	data, err := c.api.Put(fmt.Sprintf("domains/%d/records/%d", domainID, record.ID), payload)
 	if err != nil {
 		return updated, errors.Wrap(err, "failed to make request for UpdateDomainRecord")
 	}

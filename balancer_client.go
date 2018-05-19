@@ -15,34 +15,34 @@ func NewBalancerClient(api APIClient) BalancerClient {
 	return BalancerClient{api: api}
 }
 
-func (c BalancerClient) GetNodeBalancers() ([]NodeBalancer, error) {
+func (c BalancerClient) ListNodeBalancers() ([]NodeBalancer, error) {
 	data, err := c.api.Get("nodebalancers")
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to make request for GetNodeBalancers")
+		return nil, errors.Wrap(err, "failed to make request for ListNodeBalancer")
 	}
 
 	var results Results
 	if err := json.Unmarshal(data, &results); err != nil {
-		return nil, errors.Wrap(err, "failed to unmarshal GetNodeBalancers response")
+		return nil, errors.Wrap(err, "failed to unmarshal ListNodeBalancer response")
 	}
 
 	var balancers []NodeBalancer
 	if err := json.Unmarshal(results.Data, &balancers); err != nil {
-		return nil, errors.Wrap(err, "failed to unmarshal GetNodeBalancers data")
+		return nil, errors.Wrap(err, "failed to unmarshal ListNodeBalancer data")
 	}
 
 	return balancers, nil
 }
 
-func (c BalancerClient) GetNodeBalancer(id uint) (NodeBalancer, error) {
+func (c BalancerClient) ViewNodeBalancer(id uint) (NodeBalancer, error) {
 	var balancer NodeBalancer
 	data, err := c.api.Get(fmt.Sprintf("nodebalancers/%d", id))
 	if err != nil {
-		return balancer, errors.Wrap(err, "failed to make request for GetNodeBalancer")
+		return balancer, errors.Wrap(err, "failed to make request for ViewNodeBalancer")
 	}
 
 	if err := json.Unmarshal(data, &balancer); err != nil {
-		return balancer, errors.Wrap(err, "failed to decode GetNodeBalancer response")
+		return balancer, errors.Wrap(err, "failed to decode ViewNodeBalancer response")
 	}
 
 	return balancer, nil

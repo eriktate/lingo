@@ -30,16 +30,24 @@ type NewImage struct {
 	Description string `json:"description,omitempty"`
 }
 
-// A NewImageRequest contains the fields necessary to build a new image.
-type NewImageRequest struct {
+// A CreateImageRequest contains the fields necessary to build a new image.
+type CreateImageRequest struct {
 	DiskID      string `json:"disk_id"`
 	Label       string `json:"label"`
 	Description string `json:"description"`
 }
 
+// An UpdateImageRequest contains the fields necessary to update an existing image.
+type UpdateImageRequest struct {
+	Label       string `json:"label,omitempty"`
+	Description string `json:"description,omitempty"`
+}
+
 // An Imager works with Linode machine images.
 type Imager interface {
-	GetImages() ([]Image, error)
-	GetImagesByLabel(label string) ([]Image, error)
-	CreateImage(image NewImageRequest) error
+	ListImages() ([]Image, error)
+	ViewImage() (Image, error)
+	CreateImage(req CreateImageRequest) (Image, error)
+	UpdateImage(req UpdateImageRequest) error
+	DeleteImage(id string) error
 }

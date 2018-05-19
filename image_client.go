@@ -6,33 +6,50 @@ import (
 	"github.com/pkg/errors"
 )
 
+// An ImageClient is an API struct that can make requests related to Linode Images.
 type ImageClient struct {
 	api APIClient
 }
 
+// NewImageClient returns a new ImageClient given a valid APIClient.
 func NewImageClient(api APIClient) ImageClient {
 	return ImageClient{api: api}
 }
 
-// GetImages retrieves a slice of machine images available in Linode.
-func (c ImageClient) GetImages() ([]Image, error) {
+// ListImages retrieves a slice of machine images available in Linode.
+func (c ImageClient) ListImages() ([]Image, error) {
 	data, err := c.api.Get("images")
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to make request for GetImages")
+		return nil, errors.Wrap(err, "failed to make request for ListImages")
 	}
 
 	var results Results
 	if err := json.Unmarshal(data, &results); err != nil {
-		return nil, errors.Wrap(err, "failed to decode GetImages response")
+		return nil, errors.Wrap(err, "failed to decode ListImages response")
 	}
 
 	// TODO: Do something with paging here?
 	var images []Image
 	if err := json.Unmarshal(results.Data, &images); err != nil {
-		return nil, errors.Wrap(err, "failed to unmarshal GetImages data")
+		return nil, errors.Wrap(err, "failed to unmarshal ListImages data")
 	}
 
 	return images, nil
+}
+
+// ViewImage retrieves a slice of machine images available in Linode.
+func (c ImageClient) ViewImage(id string) (Image, error) {
+	var image Image
+	data, err := c.api.Get("images/" + id)
+	if err != nil {
+		return image, errors.Wrap(err, "failed to make request for ViewImage")
+	}
+
+	if err := json.Unmarshal(data, &image); err != nil {
+		return image, errors.Wrap(err, "failed to unmarshal ViewImage data")
+	}
+
+	return image, nil
 }
 
 // CreateImage creates a new machine image from an existing Linode disk.

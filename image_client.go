@@ -2,6 +2,7 @@ package lingo
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/pkg/errors"
 )
@@ -53,7 +54,7 @@ func (c ImageClient) ViewImage(id string) (Image, error) {
 }
 
 // CreateImage creates a new machine image from an existing Linode disk.
-func (c ImageClient) CreateImage(req NewImage) (Image, error) {
+func (c ImageClient) CreateImage(req CreateImageRequest) (Image, error) {
 	var image Image
 	payload, err := json.Marshal(req)
 	if err != nil {
@@ -70,4 +71,33 @@ func (c ImageClient) CreateImage(req NewImage) (Image, error) {
 	}
 
 	return image, nil
+}
+
+// UpdateImage updates an existing machine image.
+func (c ImageClient) UpdateImage(req UpdateImageRequest) (Image, error) {
+	var image Image
+	payload, err := json.Marshal(req)
+	if err != nil {
+		return image, errors.Wrap(err, "failed to marshal request for UpdateImage")
+	}
+
+	data, err := c.api.Put(fmt.Sprintf("images/%s", req.ID), payload)
+	if err != nil {
+		return image, errors.Wrap(err, "failed to make request for UpdateImage")
+	}
+
+	if err := json.Unmarshal(data, &image); err != nil {
+		return image, errors.Wrap(err, "failed to decode UpdateImage response")
+	}
+
+	return image, nil
+}
+
+// DeleteImage retrieves a slice of machine images available in Linode.
+func (c ImageClient) DeleteImage(id string) error {
+	if _, err := c.api.Delete("images/" + id); err != nil {
+		return errors.Wrap(err, "failed to make request for DeleteImage")
+	}
+
+	return nil
 }

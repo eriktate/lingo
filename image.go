@@ -32,13 +32,14 @@ type NewImage struct {
 
 // A CreateImageRequest contains the fields necessary to build a new image.
 type CreateImageRequest struct {
-	DiskID      string `json:"disk_id"`
+	DiskID      uint   `json:"disk_id"`
 	Label       string `json:"label"`
 	Description string `json:"description"`
 }
 
 // An UpdateImageRequest contains the fields necessary to update an existing image.
 type UpdateImageRequest struct {
+	ID          string `json:"-"`
 	Label       string `json:"label,omitempty"`
 	Description string `json:"description,omitempty"`
 }

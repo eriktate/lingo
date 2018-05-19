@@ -85,7 +85,7 @@ func (c DomainClient) UpdateDomain(domain Domain) (Domain, error) {
 		return updated, errors.Wrap(err, "failed to marshal request for UpdateDomain")
 	}
 
-	data, err := c.api.Put("domains", payload)
+	data, err := c.api.Put(fmt.Sprintf("domains/%d", domain.ID), payload)
 	if err != nil {
 		return updated, errors.Wrap(err, "failed to make request for UpdateDomain")
 	}
@@ -99,15 +99,13 @@ func (c DomainClient) UpdateDomain(domain Domain) (Domain, error) {
 }
 
 // DeleteDomain deletes a specific Domain from a Linode account.
-func (c DomainClient) DeleteDomain(id uint) (Domain, error) {
-	var domain Domain
-
+func (c DomainClient) DeleteDomain(id uint) error {
 	_, err := c.api.Delete(fmt.Sprintf("domains/%d", id))
 	if err != nil {
-		return domain, errors.Wrap(err, "failed to make request for DeleteDomain")
+		return errors.Wrap(err, "failed to make request for DeleteDomain")
 	}
 
-	return domain, nil
+	return nil
 }
 
 // ListDomainRecords retrieves a slice of Domain Records available within the specified Domain.

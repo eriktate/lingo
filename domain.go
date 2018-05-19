@@ -34,7 +34,7 @@ type Domain struct {
 	AxfrIPs     []string     `json:"axfr_ips,omitempty"`
 	ExpireSec   uint         `json:"expire_sec,omitempty"`
 	RefreshSec  uint         `json:"refresh_sec,omitempty"`
-	SoaEmail    string       `json:"soa_email,omitempty"`
+	SOA         string       `json:"soa_email,omitempty"`
 }
 
 // A DomainRecordType is an enum of possible Linode Domain Record types.

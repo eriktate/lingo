@@ -16,7 +16,7 @@ type Time struct {
 // MarshalJSON implements the json.Marshaler interface for the custom
 // Time type.
 func (t Time) MarshalJSON() ([]byte, error) {
-	return []byte(t.Format(formatString)), nil
+	return []byte(strconv.Quote(t.Format(formatString))), nil
 }
 
 // UnmarshalJSON implements the json.Unmarshaler interface for the custom

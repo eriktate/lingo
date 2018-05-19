@@ -43,7 +43,6 @@ type Linode struct {
 	Alerts     Alerts     `json:"alerts"`
 	Region     string     `json:"region"`
 	Image      string     `json:"image,omitempty"`
-	Group      string     `json:"group,omitempty"`
 	IPv4       []string   `json:"ipv4"`
 	IPv6       string     `json:"ipv6"`
 	Label      string     `json:"label,omitempty"`
@@ -59,7 +58,6 @@ type NewLinode struct {
 	Region          string          `json:"region"`
 	Type            string          `json:"type"`
 	Label           string          `json:"label,omitempty"`
-	Group           string          `json:"group,omitempty"`
 	RootPass        string          `json:"root_pass,omitempty"`
 	AuthorizedKeys  []string        `json:"authorized_keys,omitempty"`
 	StackScriptID   uint            `json:"stackscript_id,omitempty"`
@@ -75,7 +73,6 @@ type CloneRequest struct {
 	Region         string   `json:"region"`
 	Type           string   `json:"type"`
 	Label          string   `json:"label,omitempty"`
-	Group          string   `json:"group,omitempty"`
 	LinodeID       uint     `json:"linode_id,omitempty"`
 	BackupsEnabled bool     `json:"backups_enabled"`
 	Disks          []string `json:"disks,omitempty"`

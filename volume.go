@@ -1,7 +1,9 @@
 package lingo
 
+// VolumeStatus aliases a string for use as a pseudo enum.
 type VolumeStatus string
 
+// Possible values for VolumeStatus.
 const (
 	VolumeStatusCreating = VolumeStatus("creating")
 	VolumeStatusActive   = VolumeStatus("active")
@@ -9,6 +11,7 @@ const (
 	VolumeStatusOffline  = VolumeStatus("offline")
 )
 
+// A Volume
 type Volume struct {
 	ID             uint         `json:"id"`
 	Label          string       `json:"label"`

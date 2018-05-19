@@ -29,11 +29,12 @@ type Errors struct {
 
 // Error implements the go error interface for Errors.
 func (e Errors) Error() string {
-	errorTexts := make([]string, len(e.Errors))
+	errorTexts := make([]string, len(e.Errors)+1)
+	errorTexts[0] = "Linode API Error: "
 
 	for i, err := range e.Errors {
-		errorTexts[i] = err.Error()
+		errorTexts[i+1] = err.Error()
 	}
 
-	return strings.Join(errorTexts, "\n")
+	return strings.Join(errorTexts, "\n\t")
 }

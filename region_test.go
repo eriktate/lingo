@@ -7,16 +7,16 @@ import (
 	"github.com/eriktate/lingo"
 )
 
-func Test_Integration_Regions(t *testing.T) {
+func Test_Regions(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
 	api := lingo.NewAPIClient(apiKey)
 	client := lingo.NewRegionClient(api)
 
-	if _, err := client.GetRegions(); err != nil {
-		t.Fatalf("Failed to GetRegions: %s", err)
+	if _, err := client.ListRegions(); err != nil {
+		t.Fatalf("Failed to list regions: %s", err)
 	}
 
-	if _, err := client.GetRegion("ap-northeast"); err != nil {
-		t.Fatalf("Failed to GetRegion: %s", err)
+	if _, err := client.ViewRegion("ap-northeast"); err != nil {
+		t.Fatalf("Failed to get region: %s", err)
 	}
 }

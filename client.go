@@ -89,7 +89,7 @@ func (c APIClient) do(req *http.Request) ([]byte, error) {
 	if res.StatusCode != http.StatusOK {
 		var err Errors
 		if err := json.Unmarshal(data, &err); err != nil {
-			return nil, errors.New("request failed, could not unmarshal error response")
+			return nil, errors.Errorf("request failed, could not unmarshal error response. Raw error: %s", string(data))
 		}
 
 		return nil, err

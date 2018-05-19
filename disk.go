@@ -10,8 +10,10 @@ const (
 	DiskStatusUpdated  = DiskStatus("updated")
 )
 
+// A FileSystem is an enumeration of potential file systems a disk can be created with.
 type FileSystem string
 
+// The FileSystem enum values.
 const (
 	FileSystemRaw    = FileSystem("raw")
 	FileSystemSwap   = FileSystem("swap")
@@ -20,6 +22,7 @@ const (
 	FileSystemInitrd = FileSystem("initrd")
 )
 
+// A Disk represents a Linode Disk.
 type Disk struct {
 	ID         uint       `json:"id"`
 	Label      string     `json:"label"`
@@ -30,7 +33,8 @@ type Disk struct {
 	Updated    Time       `json:"updated"`
 }
 
-type NewDisk struct {
+// A CreateDiskRequest contains the information necessary to build a new Linode Disk.
+type CreateDiskRequest struct {
 	LinodeID        uint            `json:"-"`
 	Size            uint            `json:"size"`
 	Image           string          `json:"image,omitempty"`
@@ -43,7 +47,21 @@ type NewDisk struct {
 	StackscriptData json.RawMessage `json:"stackscript_data,omitempty"`
 }
 
+// An UpdateDiskRequest wraps up the data that can be updated on a Linode Disk.
+type UpdateDiskRequest struct {
+	LinodeID   uint       `json:"-"`
+	DiskID     uint       `json:"id"`
+	Label      string     `json:"label,omitempty"`
+	FileSystem FileSystem `json:"filesystem,omitempty"`
+}
+
+// A Disker describes all of the functions necessary to fulfill the Linode Disk API.
 type Disker interface {
-	GetDisks(linodeID uint) ([]Disk, error)
-	CreateDisk(newDisk NewDisk) (Disk, error)
+	ListDisks(linodeID uint) ([]Disk, error)
+	ViewDisk(linodeID, diskID uint) (Disk, error)
+	CreateDisk(req CreateDiskRequest) (Disk, error)
+	UpdateDisk(req UpdateDiskRequest) (Disk, error)
+	DeleteDisk(linodeID, diskID uint) error
+	ResetDiskRootPassword(linodeID, diskID uint, password string) (Disk, error)
+	ResizeDisk(linodeID, diskID, size uint) (Disk, error)
 }

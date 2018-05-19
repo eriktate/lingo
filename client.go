@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/pkg/errors"
@@ -88,8 +87,12 @@ func (c APIClient) do(req *http.Request) ([]byte, error) {
 
 	// TODO: Figure out how to properly return this error and remove log.
 	if res.StatusCode != http.StatusOK {
-		log.Println(string(data))
-		return nil, errors.New("request failed")
+		var err Errors
+		if err := json.Unmarshal(data, &err); err != nil {
+			return nil, errors.Errorf("request failed, could not unmarshal error response. Raw error: %s", string(data))
+		}
+
+		return nil, err
 	}
 
 	return data, nil

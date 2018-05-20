@@ -9,7 +9,7 @@ import (
 
 func Test_CRUDDomain(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewDomainClient(api)
 
 	existing, err := client.ListDomains()
@@ -75,7 +75,7 @@ func Test_CRUDDomain(t *testing.T) {
 
 func Test_CRUDDomainRecord(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewDomainClient(api)
 
 	newDomain := lingo.Domain{

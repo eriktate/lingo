@@ -11,7 +11,7 @@ import (
 
 func Test_Disks(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewDiskClient(api)
 	linodeClient := lingo.NewLinodeClient(api)
 
@@ -83,7 +83,7 @@ func Test_Disks(t *testing.T) {
 
 func Test_ResizeDisk(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewDiskClient(api)
 	linodeClient := lingo.NewLinodeClient(api)
 

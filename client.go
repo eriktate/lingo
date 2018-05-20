@@ -30,7 +30,7 @@ type Results struct {
 
 // NewAPIClient returns a new Linode client struct loaded with the given
 // API key.
-func NewAPIClient(apiKey string, backoff bool) APIClient {
+func NewAPIClient(apiKey string, backoff *backoffConfig) APIClient {
 	// TODO: Build a Client struct here instead of using the default.
 	return APIClient{
 		apiKey: apiKey,
@@ -169,7 +169,7 @@ type Lingo struct {
 }
 
 // NewLingo returns a new Lingo struct given a Linode API key.
-func NewLingo(apiKey string, backoff bool) Lingo {
+func NewLingo(apiKey string, backoff *backoffConfig) Lingo {
 	api := NewAPIClient(apiKey, backoff)
 
 	return Lingo{

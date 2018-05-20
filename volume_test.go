@@ -9,7 +9,7 @@ import (
 
 func Test_Volume(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewVolumeClient(api)
 
 	existing, err := client.ListVolumes()

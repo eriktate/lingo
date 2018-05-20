@@ -43,7 +43,7 @@ func Test_Integration_Linodes(t *testing.T) {
 		t.Fatalf("Failed to fetch linode1: %s", err)
 	}
 
-	if _, err := client.GetTypes(); err != nil {
+	if _, err := client.ListTypes(); err != nil {
 		t.Fatalf("Failed to fetch linode types: %s", err)
 	}
 
@@ -65,20 +65,20 @@ func Test_Integration_Linodes(t *testing.T) {
 	}
 }
 
-func Test_GetTypes(t *testing.T) {
+func Test_ListTypes(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
 	api := lingo.NewAPIClient(apiKey)
 	client := lingo.NewLinodeClient(api)
 
-	types, err := client.GetTypes()
+	types, err := client.ListTypes()
 	if err != nil {
-		t.Fatalf("Failed to GetTypes: %s", err)
+		t.Fatalf("Failed to ListTypes: %s", err)
 	}
 
 	if len(types) > 0 {
-		ltype, err := client.GetType(types[0].ID)
+		ltype, err := client.ViewType(types[0].ID)
 		if err != nil {
-			t.Fatalf("Failed to GetType: %s", err)
+			t.Fatalf("Failed to ViewType: %s", err)
 		}
 
 		if ltype.Label != types[0].Label {

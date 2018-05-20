@@ -151,8 +151,12 @@ type Lingo struct {
 	BalancerClient
 	ImageClient
 	RegionClient
+	DomainClient
+	VolumeClient
+	DiskClient
 }
 
+// NewLingo returns a new Lingo struct given a Linode API key.
 func NewLingo(apiKey string) Lingo {
 	api := NewAPIClient(apiKey)
 
@@ -161,5 +165,8 @@ func NewLingo(apiKey string) Lingo {
 		BalancerClient: NewBalancerClient(api),
 		ImageClient:    NewImageClient(api),
 		RegionClient:   NewRegionClient(api),
+		DomainClient:   NewDomainClient(api),
+		VolumeClient:   NewVolumeClient(api),
+		DiskClient:     NewDiskClient(api),
 	}
 }

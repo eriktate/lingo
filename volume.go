@@ -31,6 +31,7 @@ type Volume struct {
 type CreateVolumeRequest struct {
 	Label    string `json:"label"`
 	Size     uint   `json:"size"`
+	Region   string `json:"region,omitempty"`
 	LinodeID uint   `json:"linode_id,omitempty"`
 	ConfigID uint   `json:"config_id,omitempty"`
 }

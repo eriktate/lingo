@@ -9,12 +9,12 @@ This project is under very active development and is definitely *NOT* safe for p
 - Image
 - Linode Types
 - Regions
+- Volume
 
 # Partial APIs
 - Linode Instance
 - NodeBalancer
 - Disk
-- Volume
 
 # TODO APIs
 - Networking

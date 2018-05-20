@@ -54,7 +54,7 @@ type Linode struct {
 	Updatd     Time       `json:"updated"`
 }
 
-type NewLinode struct {
+type CreateLinodeRequest struct {
 	Region          string          `json:"region"`
 	Type            string          `json:"type"`
 	Label           string          `json:"label,omitempty"`
@@ -66,9 +66,16 @@ type NewLinode struct {
 	Image           string          `json:"image,omitempty"`
 	BackupsEnabled  bool            `json:"backups_enabled"`
 	Booted          bool            `json:"booted"`
+	SwapSize        uint            `json:"swap_size,omitempty"`
 }
 
-type CloneRequest struct {
+type UpdateLinodeRequest struct {
+	ID     uint   `json:"-"`
+	Label  string `json:"label,omitempty"`
+	Alerts Alerts `json:"alerts,omitempty"`
+}
+
+type CloneLinodeRequest struct {
 	ID             uint     `json:"-"`
 	Region         string   `json:"region"`
 	Type           string   `json:"type"`
@@ -79,7 +86,7 @@ type CloneRequest struct {
 	Configs        []string `json:"configs,omitempty"`
 }
 
-type RebuildRequest struct {
+type RebuildLinodeRequest struct {
 	ID              uint            `json:"-"`
 	Image           string          `json:"image"`
 	RootPass        string          `json:"root_pass"`
@@ -122,9 +129,10 @@ type LinodeType struct {
 }
 
 type Linoder interface {
-	GetLinodes() ([]Linode, error)
-	GetLinode(id uint) (Linode, error)
-	CreateLinode(linode NewLinode) (Linode, error)
+	ListLinodes() ([]Linode, error)
+	ViewLinode(id uint) (Linode, error)
+	CreateLinode(req CreateLinodeRequest) (Linode, error)
+	UpdateLinode(req UpdateLinodeRequest)
 	DeleteLinode(id uint) error
 	BootLinode(id uint) error
 	BootLinodeWithConfig(id, configID uint) error
@@ -135,7 +143,7 @@ type Linoder interface {
 	GetType(id string) (LinodeType, error)
 	ResizeLinode(id uint, typeID string) error
 	Mutate(id uint) error
-	CloneLinode(req CloneRequest) (Linode, error)
-	RebuildLinode(req RebuildRequest) error
+	CloneLinode(req CloneLinodeRequest) (Linode, error)
+	RebuildLinode(req RebuildLinodeRequest) error
 	GetLinodeVolumes(id uint) ([]Volume, error)
 }

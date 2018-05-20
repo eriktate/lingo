@@ -49,8 +49,8 @@ type CreateDiskRequest struct {
 
 // An UpdateDiskRequest wraps up the data that can be updated on a Linode Disk.
 type UpdateDiskRequest struct {
+	ID         uint       `json:"-"`
 	LinodeID   uint       `json:"-"`
-	DiskID     uint       `json:"id"`
 	Label      string     `json:"label,omitempty"`
 	FileSystem FileSystem `json:"filesystem,omitempty"`
 }

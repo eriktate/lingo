@@ -65,3 +65,21 @@ type Disker interface {
 	ResetDiskRootPassword(linodeID, diskID uint, password string) (Disk, error)
 	ResizeDisk(linodeID, diskID, size uint) (Disk, error)
 }
+
+// ValidateFileSystem validates whether or not a test string is a FileSystem.
+func ValidateFileSystem(test string) bool {
+	switch FileSystem(test) {
+	case FileSystemRaw:
+		fallthrough
+	case FileSystemSwap:
+		fallthrough
+	case FileSystemExt3:
+		fallthrough
+	case FileSystemExt4:
+		fallthrough
+	case FileSystemInitrd:
+		return true
+	default:
+		return false
+	}
+}

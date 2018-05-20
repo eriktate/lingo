@@ -15,8 +15,9 @@ const baseURI = "https://api.linode.com/v4/"
 
 // An APIClient is capable of making API calls to the Linode API.
 type APIClient struct {
-	apiKey string
-	h      *http.Client
+	apiKey  string
+	backoff *backoffConfig
+	h       *http.Client
 }
 
 // Results is the envelope format for GET requests that return paged data.
@@ -29,7 +30,7 @@ type Results struct {
 
 // NewAPIClient returns a new Linode client struct loaded with the given
 // API key.
-func NewAPIClient(apiKey string) APIClient {
+func NewAPIClient(apiKey string, backoff bool) APIClient {
 	// TODO: Build a Client struct here instead of using the default.
 	return APIClient{
 		apiKey: apiKey,
@@ -75,6 +76,10 @@ func (c APIClient) Delete(path string) ([]byte, error) {
 }
 
 func (c APIClient) do(req *http.Request) ([]byte, error) {
+	if c.backoff != nil {
+		defer c.backoff.Reset()
+	}
+
 	res, err := c.h.Do(req)
 	if err != nil {
 		return nil, err
@@ -85,11 +90,18 @@ func (c APIClient) do(req *http.Request) ([]byte, error) {
 		return nil, err
 	}
 
-	// TODO: Figure out how to properly return this error and remove log.
 	if res.StatusCode != http.StatusOK {
-		var err Errors
-		if err := json.Unmarshal(data, &err); err != nil {
+		var errs Errors
+		if err := json.Unmarshal(data, &errs); err != nil {
 			return nil, errors.Errorf("request failed, could not unmarshal error response. Raw error: %s", string(data))
+		}
+
+		if errs.IsBusy() && c.backoff != nil {
+			if err := c.backoff.Retry(); err != nil {
+				return nil, errors.Wrap(errs, err.Error())
+			}
+
+			return c.do(req)
 		}
 
 		return nil, err
@@ -157,8 +169,8 @@ type Lingo struct {
 }
 
 // NewLingo returns a new Lingo struct given a Linode API key.
-func NewLingo(apiKey string) Lingo {
-	api := NewAPIClient(apiKey)
+func NewLingo(apiKey string, backoff bool) Lingo {
+	api := NewAPIClient(apiKey, backoff)
 
 	return Lingo{
 		LinodeClient:   NewLinodeClient(api),

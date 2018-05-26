@@ -73,5 +73,5 @@ type Networker interface {
 	UpdateAddressRDNS(req UpdateRDNSRequest) (Address, error)
 	ConfigureSharing(req SharingRequest) error
 	ListIPv6Pools() ([]IPv6Range, error)
-	ListIPv6Range() ([]IPv6Pool, error)
+	ListIPv6Ranges() ([]IPv6Pool, error)
 }

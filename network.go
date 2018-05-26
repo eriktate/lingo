@@ -69,8 +69,8 @@ type Networker interface {
 	ListAddresses() ([]Address, error)
 	ViewAddress(address string) (Address, error)
 	AllocateAddress(req AllocateAddressRequest) (Address, error)
-	UpdateAddressRDNS(req UpdateRDNSRequest) (Address, error)
 	AssignAddress(req AssignAddressRequest) error
+	UpdateAddressRDNS(req UpdateRDNSRequest) (Address, error)
 	ConfigureSharing(req SharingRequest) error
 	ListIPv6Pools() ([]IPv6Range, error)
 	ListIPv6Range() ([]IPv6Pool, error)

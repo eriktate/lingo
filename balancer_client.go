@@ -7,14 +7,17 @@ import (
 	"github.com/pkg/errors"
 )
 
+// A BalancerClient is an API struct that can make requests related to Linode Node Balancers.
 type BalancerClient struct {
 	api APIClient
 }
 
+// NewBalancerClient returns a new BalancerClient given a valid APIClient.
 func NewBalancerClient(api APIClient) BalancerClient {
 	return BalancerClient{api: api}
 }
 
+// ListNodeBalancers retrieves a slice of node balancers.
 func (c BalancerClient) ListNodeBalancers() ([]NodeBalancer, error) {
 	data, err := c.api.Get("nodebalancers")
 	if err != nil {
@@ -34,6 +37,7 @@ func (c BalancerClient) ListNodeBalancers() ([]NodeBalancer, error) {
 	return balancers, nil
 }
 
+// ViewNodeBalancer retrieves a specific node balancer.
 func (c BalancerClient) ViewNodeBalancer(id uint) (NodeBalancer, error) {
 	var balancer NodeBalancer
 	data, err := c.api.Get(fmt.Sprintf("nodebalancers/%d", id))
@@ -48,10 +52,11 @@ func (c BalancerClient) ViewNodeBalancer(id uint) (NodeBalancer, error) {
 	return balancer, nil
 }
 
-func (c BalancerClient) CreateNodeBalancer(request CreateBalancerRequest) (NodeBalancer, error) {
+// CreateNodeBalancer creates a new node balancer based on the parameter struct provided.
+func (c BalancerClient) CreateNodeBalancer(req CreateBalancerRequest) (NodeBalancer, error) {
 	var created NodeBalancer
 
-	payload, err := json.Marshal(&request)
+	payload, err := json.Marshal(&req)
 	if err != nil {
 		return created, errors.Wrap(err, "failed to marshal request for CreateNodeBalancer")
 	}
@@ -68,15 +73,16 @@ func (c BalancerClient) CreateNodeBalancer(request CreateBalancerRequest) (NodeB
 	return created, nil
 }
 
-func (c BalancerClient) UpdateNodeBalancer(request UpdateBalancerRequest) (NodeBalancer, error) {
+// UpdateNodeBalancer updates an existing node balancer based on the parameter struct provided.
+func (c BalancerClient) UpdateNodeBalancer(req UpdateBalancerRequest) (NodeBalancer, error) {
 	var created NodeBalancer
 
-	payload, err := json.Marshal(&request)
+	payload, err := json.Marshal(&req)
 	if err != nil {
 		return created, errors.Wrap(err, "failed to marshal request for UpdateNodeBalancer")
 	}
 
-	data, err := c.api.Put(fmt.Sprintf("nodebalancers/%d", request.ID), payload)
+	data, err := c.api.Put(fmt.Sprintf("nodebalancers/%d", req.ID), payload)
 	if err != nil {
 		return created, errors.Wrap(err, "failed to make request for UpdateNodeBalancer")
 	}
@@ -88,6 +94,7 @@ func (c BalancerClient) UpdateNodeBalancer(request UpdateBalancerRequest) (NodeB
 	return created, nil
 }
 
+// DeleteNodeBalancer deletes a specific node balancer.
 func (c BalancerClient) DeleteNodeBalancer(id uint) error {
 	if _, err := c.api.Delete(fmt.Sprintf("nodebalancers/%d", id)); err != nil {
 		return errors.Wrap(err, "failed to make request for DeleteNodeBalancer")
@@ -96,6 +103,7 @@ func (c BalancerClient) DeleteNodeBalancer(id uint) error {
 	return nil
 }
 
+// ListNodeBalancerConfigs retrieves a slice of available configs on a given node balancer.
 func (c BalancerClient) ListNodeBalancerConfigs(balancerID uint) ([]BalancerConfig, error) {
 	data, err := c.api.Get(fmt.Sprintf("nodebalancers/%d/configs", balancerID))
 	if err != nil {
@@ -115,6 +123,7 @@ func (c BalancerClient) ListNodeBalancerConfigs(balancerID uint) ([]BalancerConf
 	return configs, nil
 }
 
+// ViewNodeBalancerConfig retrieves a specific config from the given node balancer.
 func (c BalancerClient) ViewNodeBalancerConfig(balancerID, configID uint) (BalancerConfig, error) {
 	var config BalancerConfig
 	data, err := c.api.Get(fmt.Sprintf("nodebalancers/%d/configs/%d", balancerID, configID))
@@ -129,6 +138,7 @@ func (c BalancerClient) ViewNodeBalancerConfig(balancerID, configID uint) (Balan
 	return config, nil
 }
 
+// CreateNodeBalancerConfig creates a new config to the specified node balancer.
 func (c BalancerClient) CreateNodeBalancerConfig(req CreateBalancerConfigRequest) (BalancerConfig, error) {
 	var created BalancerConfig
 
@@ -149,6 +159,7 @@ func (c BalancerClient) CreateNodeBalancerConfig(req CreateBalancerConfigRequest
 	return created, nil
 }
 
+// UpdateNodeBalancerConfig updates an existing config on the specified node balancer.
 func (c BalancerClient) UpdateNodeBalancerConfig(req UpdateBalancerConfigRequest) (NodeBalancer, error) {
 	var updated NodeBalancer
 
@@ -169,6 +180,7 @@ func (c BalancerClient) UpdateNodeBalancerConfig(req UpdateBalancerConfigRequest
 	return updated, nil
 }
 
+// DeleteNodeBalancerConfig deletes an existing config from the specified node balancer.
 func (c BalancerClient) DeleteNodeBalancerConfig(balancerID, configID uint) error {
 	if _, err := c.api.Delete(fmt.Sprintf("nodebalancers/%d/configs/%d", balancerID, configID)); err != nil {
 		return errors.Wrap(err, "failed to make request for DeleteNodeBalancerConfig")
@@ -177,6 +189,7 @@ func (c BalancerClient) DeleteNodeBalancerConfig(balancerID, configID uint) erro
 	return nil
 }
 
+// ListNodes retrieves a slice of nodes on the specified node balancer using the specified config.
 func (c BalancerClient) ListNodes(balancerID, configID uint) ([]Node, error) {
 	data, err := c.api.Get(fmt.Sprintf("nodebalancers/%d/configs/%d/nodes", balancerID, configID))
 	if err != nil {
@@ -196,6 +209,7 @@ func (c BalancerClient) ListNodes(balancerID, configID uint) ([]Node, error) {
 	return nodes, nil
 }
 
+// ViewNode retrieves a specific node given the node balancer, config, and node ID.
 func (c BalancerClient) ViewNode(balancerID, configID, nodeID uint) (Node, error) {
 	var node Node
 	data, err := c.api.Get(fmt.Sprintf("nodebalancers/%d/configs/%d/nodes/%d", balancerID, configID, nodeID))
@@ -210,6 +224,7 @@ func (c BalancerClient) ViewNode(balancerID, configID, nodeID uint) (Node, error
 	return node, nil
 }
 
+// CreateNode creates a new node on an existing node balancer using the specified config.
 func (c BalancerClient) CreateNode(req CreateNodeRequest) (Node, error) {
 	var created Node
 
@@ -230,6 +245,7 @@ func (c BalancerClient) CreateNode(req CreateNodeRequest) (Node, error) {
 	return created, nil
 }
 
+// UpdateNode updates an existing node on an existing node balancer using the specified config.
 func (c BalancerClient) UpdateNode(req UpdateNodeRequest) (Node, error) {
 	var updated Node
 
@@ -250,6 +266,7 @@ func (c BalancerClient) UpdateNode(req UpdateNodeRequest) (Node, error) {
 	return updated, nil
 }
 
+// DeleteNode deletes a node from the a specified config on the specified node balancer.
 func (c BalancerClient) DeleteNode(balancerID, configID, nodeID uint) error {
 	if _, err := c.api.Delete(fmt.Sprintf("nodebalancers/%d/configs/%d/nodes/%d", balancerID, configID, nodeID)); err != nil {
 		return errors.Wrap(err, "failed to make request for DeleteNode")

@@ -156,6 +156,8 @@ func (c BalancerClient) CreateNodeBalancerConfig(req CreateBalancerConfigRequest
 		return created, errors.Wrap(err, "failed to unmarshal CreateNodeBalancerConfig response")
 	}
 
+	created.NodeBalancerID = req.NodeBalancerID
+
 	return created, nil
 }
 

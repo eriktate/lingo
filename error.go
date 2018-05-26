@@ -6,6 +6,7 @@ import (
 )
 
 const busyText = "Linode busy."
+const notFoundText = "Not found"
 
 // An Error is the structured error type that Linode returns on 4xx and 5xx status codes.
 type Error struct {
@@ -52,6 +53,24 @@ func (e Error) IsBusy() bool {
 func (e Errors) IsBusy() bool {
 	for _, err := range e.Errors {
 		if err.IsBusy() {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (e Error) IsNotFound() bool {
+	if e.Reason == notFoundText {
+		return true
+	}
+
+	return false
+}
+
+func (e Errors) IsNotFound() bool {
+	for _, err := range e.Errors {
+		if err.IsNotFound() {
 			return true
 		}
 	}

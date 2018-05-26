@@ -91,18 +91,18 @@ const (
 type CreateBalancerConfigRequest struct {
 	ID             uint        `json:"-"`
 	NodeBalancerID uint        `json:"-"`
-	CheckPath      string      `json:"check_path"`
-	Protocol       Protocol    `json:"protocol"`
-	Algorithm      Algo        `json:"algorithm"`
-	Stickiness     Sticky      `json:"stickiness"`
-	Check          Check       `json:"check"`
-	CheckInterval  uint        `json:"check_interval"`
-	CheckTimeout   uint        `json:"check_timeout"`
-	CheckAttempts  uint        `json:"check_attempts"`
-	Port           uint        `json:"port"`
-	CheckBody      string      `json:"check_body"`
+	CheckPath      string      `json:"check_path,omitempty"`
+	Protocol       Protocol    `json:"protocol,omitempty"`
+	Algorithm      Algo        `json:"algorithm,omitempty"`
+	Stickiness     Sticky      `json:"stickiness,omitempty"`
+	Check          Check       `json:"check,omitempty"`
+	CheckInterval  uint        `json:"check_interval,omitempty"`
+	CheckTimeout   uint        `json:"check_timeout,omitempty"`
+	CheckAttempts  uint        `json:"check_attempts,omitempty"`
+	Port           uint        `json:"port,omitempty"`
+	CheckBody      string      `json:"check_body,omitempty"`
 	CheckPassive   bool        `json:"check_passive"`
-	CipherSuite    CipherSuite `json:"cipher_suite"`
+	CipherSuite    CipherSuite `json:"cipher_suite,omitempty"`
 	SSLCert        string      `json:"ssl_cert,omitempty"`
 	SSLKey         string      `json:"ssl_key,omitempty"`
 }

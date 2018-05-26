@@ -104,7 +104,7 @@ func (c APIClient) do(req *http.Request) ([]byte, error) {
 			return c.do(req)
 		}
 
-		return nil, err
+		return nil, errs
 	}
 
 	return data, nil

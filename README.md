@@ -1,5 +1,6 @@
 # lingo
 [![GoDoc](https://godoc.org/github.com/eriktate/lingo?status.svg)](http://godoc.org/github.com/eriktate/lingo)
+
 Go client library for the Linode API.
 
 ## WIP

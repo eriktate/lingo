@@ -209,3 +209,73 @@ type Balancer interface {
 	UpdateNode(req UpdateNodeRequest) (Node, error)
 	DeleteNode(balancerID, nodeID uint) error
 }
+
+// ValidateProtocol validates whether or not a test string is an Protocol enum.
+func ValidateProtocol(test string) bool {
+	switch Protocol(test) {
+	case ProtocolHTTP, ProtocolHTTPS, ProtocolTCP:
+		return true
+	default:
+		return false
+	}
+}
+
+// ValidateAlgo validates whether or not a test string is an Algo enum.
+func ValidateAlgo(test string) bool {
+	switch Algo(test) {
+	case AlgoRoundRobin, AlgoLeastConn, AlgoSource:
+		return true
+	default:
+		return false
+	}
+}
+
+// ValidateSticky validates whether or not a test string is an Sticky enum.
+func ValidateSticky(test string) bool {
+	switch Sticky(test) {
+	case StickyNone, StickyTable, StickyHTTPCookie:
+		return true
+	default:
+		return false
+	}
+}
+
+// ValidateCheck validates whether or not a test string is an Check enum.
+func ValidateCheck(test string) bool {
+	switch Check(test) {
+	case CheckNone, CheckConnection, CheckHTTP, CheckHTTPBody:
+		return true
+	default:
+		return false
+	}
+}
+
+// ValidateCipherSuite validates whether or not a test string is an CipherSuite enum.
+func ValidateCipherSuite(test string) bool {
+	switch CipherSuite(test) {
+	case CipherSuiteRecommended, CipherSuiteLegacy:
+		return true
+	default:
+		return false
+	}
+}
+
+// ValidateNodeStatus validates whether or not a test string is an NodeStatus enum.
+func ValidateNodeStatus(test string) bool {
+	switch NodeStatus(test) {
+	case NodeStatusUnknown, NodeStatusUp, NodeStatusDown:
+		return true
+	default:
+		return false
+	}
+}
+
+// ValidateNodeMode validates whether or not a test string is an NodeMode enum.
+func ValidateNodeMode(test string) bool {
+	switch NodeMode(test) {
+	case NodeModeAccept, NodeModeReject, NodeModeDrain:
+		return true
+	default:
+		return false
+	}
+}

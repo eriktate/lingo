@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+const busyText = "Linode busy."
+
 // An Error is the structured error type that Linode returns on 4xx and 5xx status codes.
 type Error struct {
 	Field  string `json:"field,omitempty"`
@@ -37,4 +39,22 @@ func (e Errors) Error() string {
 	}
 
 	return strings.Join(errorTexts, "\n\t")
+}
+
+func (e Error) IsBusy() bool {
+	if e.Reason == busyText {
+		return true
+	}
+
+	return false
+}
+
+func (e Errors) IsBusy() bool {
+	for _, err := range e.Errors {
+		if err.IsBusy() {
+			return true
+		}
+	}
+
+	return false
 }

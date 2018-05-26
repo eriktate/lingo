@@ -9,7 +9,7 @@ import (
 
 func Test_Regions(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewRegionClient(api)
 
 	if _, err := client.ListRegions(); err != nil {

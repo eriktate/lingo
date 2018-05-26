@@ -111,7 +111,7 @@ func (c DiskClient) ResetDiskRootPassword(req UpdateDiskRequest) (Disk, error) {
 		return disk, errors.Wrap(err, "failed to marshal request for ResetDiskRootPassword")
 	}
 
-	data, err := c.api.Post(fmt.Sprintf("linode/instances/%d/disks/%d/password", req.LinodeID, req.DiskID), payload)
+	data, err := c.api.Post(fmt.Sprintf("linode/instances/%d/disks/%d/password", req.LinodeID, req.ID), payload)
 	if err != nil {
 		return disk, errors.Wrap(err, "failed to make request for ResetDiskRootPassword")
 	}

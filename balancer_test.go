@@ -9,7 +9,7 @@ import (
 
 func Test_Integration_Balancers(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewBalancerClient(api)
 
 	createRequest1 := lingo.CreateBalancerRequest{

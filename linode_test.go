@@ -11,17 +11,17 @@ import (
 
 func Test_Integration_Linodes(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewLinodeClient(api)
 
-	createLinode1 := lingo.NewLinode{
+	createLinode1 := lingo.CreateLinodeRequest{
 		Region:   "us-east-1a",
 		Type:     "g5-nanode-1",
 		Image:    "linode/debian9",
 		RootPass: "test123",
 	}
 
-	createLinode2 := lingo.NewLinode{
+	createLinode2 := lingo.CreateLinodeRequest{
 		Region:   "us-west",
 		Type:     "g5-nanode-1",
 		Image:    "linode/debian9",
@@ -38,16 +38,16 @@ func Test_Integration_Linodes(t *testing.T) {
 		t.Fatalf("Failed to create linode2: %s", err)
 	}
 
-	_, err = client.GetLinode(created1.ID)
+	_, err = client.ViewLinode(created1.ID)
 	if err != nil {
 		t.Fatalf("Failed to fetch linode1: %s", err)
 	}
 
-	if _, err := client.GetTypes(); err != nil {
+	if _, err := client.ListTypes(); err != nil {
 		t.Fatalf("Failed to fetch linode types: %s", err)
 	}
 
-	linodes, err := client.GetLinodes()
+	linodes, err := client.ListLinodes()
 	if err != nil {
 		t.Fatalf("Failed to fetch linodes: %s", err)
 	}
@@ -65,20 +65,20 @@ func Test_Integration_Linodes(t *testing.T) {
 	}
 }
 
-func Test_GetTypes(t *testing.T) {
+func Test_ListTypes(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewLinodeClient(api)
 
-	types, err := client.GetTypes()
+	types, err := client.ListTypes()
 	if err != nil {
-		t.Fatalf("Failed to GetTypes: %s", err)
+		t.Fatalf("Failed to ListTypes: %s", err)
 	}
 
 	if len(types) > 0 {
-		ltype, err := client.GetType(types[0].ID)
+		ltype, err := client.ViewType(types[0].ID)
 		if err != nil {
-			t.Fatalf("Failed to GetType: %s", err)
+			t.Fatalf("Failed to ViewType: %s", err)
 		}
 
 		if ltype.Label != types[0].Label {
@@ -89,10 +89,10 @@ func Test_GetTypes(t *testing.T) {
 
 func Test_BootLinode(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewLinodeClient(api)
 
-	createLinode := lingo.NewLinode{
+	createLinode := lingo.CreateLinodeRequest{
 		Region:   "us-east-1a",
 		Type:     "g5-nanode-1",
 		Image:    "linode/debian9",
@@ -130,11 +130,11 @@ func Test_BootLinode(t *testing.T) {
 
 func Test_ResizeLinode(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewLinodeClient(api)
 
 	newType := "g5-standard-1"
-	createLinode := lingo.NewLinode{
+	createLinode := lingo.CreateLinodeRequest{
 		Region:   "us-east-1a",
 		Type:     "g5-nanode-1",
 		Image:    "linode/debian9",
@@ -160,10 +160,10 @@ func Test_ResizeLinode(t *testing.T) {
 
 func Test_CloneLinode(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewLinodeClient(api)
 
-	createLinode := lingo.NewLinode{
+	createLinode := lingo.CreateLinodeRequest{
 		Region:   "us-east-1a",
 		Type:     "g5-nanode-1",
 		Image:    "linode/debian9",
@@ -177,7 +177,7 @@ func Test_CloneLinode(t *testing.T) {
 		t.Fatalf("Failed to create linode: %s", err)
 	}
 
-	cloneRequest := lingo.CloneRequest{
+	cloneRequest := lingo.CloneLinodeRequest{
 		ID:     testLinode.ID,
 		Region: testLinode.Region,
 		Type:   testLinode.Type,
@@ -202,10 +202,10 @@ func Test_CloneLinode(t *testing.T) {
 
 func Test_RebuildLinode(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewLinodeClient(api)
 
-	createLinode := lingo.NewLinode{
+	createLinode := lingo.CreateLinodeRequest{
 		Region:   "us-east-1a",
 		Type:     "g5-nanode-1",
 		Image:    "linode/debian9",
@@ -219,7 +219,7 @@ func Test_RebuildLinode(t *testing.T) {
 		t.Fatalf("Failed to create linode: %s", err)
 	}
 
-	rebuildRequest := lingo.RebuildRequest{
+	rebuildRequest := lingo.RebuildLinodeRequest{
 		ID:       testLinode.ID,
 		Image:    "linode/centos7",
 		RootPass: "test123",
@@ -246,7 +246,7 @@ func waitUntilOffline(client lingo.LinodeClient, id uint) error {
 }
 
 func waitUntil(client lingo.LinodeClient, id uint, status lingo.Status) error {
-	linode, err := client.GetLinode(id)
+	linode, err := client.ViewLinode(id)
 	if err != nil {
 		return err
 	}

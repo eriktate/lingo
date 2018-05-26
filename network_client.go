@@ -3,6 +3,8 @@ package lingo
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/url"
 
 	"github.com/pkg/errors"
 )
@@ -41,7 +43,9 @@ func (c NetworkClient) ListAddresses() ([]Address, error) {
 // ViewAddress retrieves a slice of machine images available in Linode.
 func (c NetworkClient) ViewAddress(address string) (Address, error) {
 	var ip Address
-	data, err := c.api.Get(fmt.Sprintf("networking/ips/%s", address))
+	url := fmt.Sprintf("networking/ips/%s", url.PathEscape(address))
+	log.Printf("hitting: %s", url)
+	data, err := c.api.Get(url)
 	if err != nil {
 		return ip, errors.Wrap(err, "failed to make request for ViewAddress")
 	}

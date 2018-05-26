@@ -35,7 +35,7 @@ func Test_Image(t *testing.T) {
 		t.Fatalf("Failed to fetch existing images: %s", err)
 	}
 
-	createLinode := lingo.NewLinode{
+	createLinode := lingo.CreateLinodeRequest{
 		Region:   "us-east-1a",
 		Type:     "g5-nanode-1",
 		Image:    "linode/debian9",

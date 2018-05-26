@@ -1,9 +1,9 @@
 package lingo
 
-// An ImageType is an enum of possible Linode image types.
+// An ImageType is an enumeration of possible Linode image types.
 type ImageType string
 
-// The possible image types are "manual" and "automatic"
+// Enum values for ImageType
 const (
 	ImageTypeManual    = ImageType("manual")
 	ImageTypeAutomatic = ImageType("automatic")
@@ -51,4 +51,14 @@ type Imager interface {
 	CreateImage(req CreateImageRequest) (Image, error)
 	UpdateImage(req UpdateImageRequest) error
 	DeleteImage(id string) error
+}
+
+// ValidateImageType validates whether or not a test string is an ImageType enum.
+func ValidateImageType(test string) bool {
+	switch ImageType(test) {
+	case ImageTypeAutomatic, ImageTypeManual:
+		return true
+	default:
+		return false
+	}
 }

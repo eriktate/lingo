@@ -1,9 +1,9 @@
 package lingo
 
-// VolumeStatus is an enum of possible volume statuses.
+// VolumeStatus is an enumeration of possible volume statuses.
 type VolumeStatus string
 
-// VolumeStatus values
+// Enum values for VolumeStatus.
 const (
 	VolumeStatusCreating       = VolumeStatus("creating")
 	VolumeStatusActive         = VolumeStatus("active")
@@ -61,4 +61,14 @@ type Volumer interface {
 	CloneVolume(req UpdateVolumeRequest) error
 	DetachVolume(id uint) error
 	ResizeVolume(id, size uint) error
+}
+
+// ValidateVolumeStatus validates whether or not a test string is a VolumeStatus enum.
+func ValidateVolumeStatus(test string) bool {
+	switch VolumeStatus(test) {
+	case VolumeStatusActive, VolumeStatusContactSupport, VolumeStatusCreating, VolumeStatusDeleted, VolumeStatusDeleting, VolumeStatusOffline, VolumeStatusResizing:
+		return true
+	default:
+		return false
+	}
 }

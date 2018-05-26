@@ -1,18 +1,18 @@
 package lingo
 
-// A DomainType is an enum of possible Linode Domain types.
+// A DomainType is an enumeration of possible Linode Domain types.
 type DomainType string
 
-// The possible domain types are "master" and "slave".
+// Enum values for DomainType.
 const (
 	DomainTypeMaster = DomainType("master")
 	DomainTypeSlave  = DomainType("slave")
 )
 
-// A DomainStatus is an enum of possible Linode Domain statuses.
+// A DomainStatus is an enumeration of possible Linode Domain statuses.
 type DomainStatus string
 
-// The possible domain statuses.
+// Enum values for DomainStatus.
 const (
 	DomainStatusDisabled  = DomainStatus("disabled")
 	DomainStatusActive    = DomainStatus("active")
@@ -37,10 +37,10 @@ type Domain struct {
 	SOA         string       `json:"soa_email,omitempty"`
 }
 
-// A DomainRecordType is an enum of possible Linode Domain Record types.
+// A DomainRecordType is an enumeration of possible Linode Domain Record types.
 type DomainRecordType string
 
-// The possible domain record types map exactly to normal DNS record types.
+// Enum values for DomainRecordType.
 const (
 	CNAME = DomainRecordType("CNAME")
 	A     = DomainRecordType("A")
@@ -80,4 +80,34 @@ type Domainer interface {
 	CreateDomainRecord(domainID uint, record DomainRecord) (DomainRecord, error)
 	UpdateDomainRecord(domainID uint, record DomainRecord) (DomainRecord, error)
 	DeleteDomainRecord(domainID, recordID uint) error
+}
+
+// ValidateDomainType validates whether or not a test string is a DomainType enum.
+func ValidateDomainType(test string) bool {
+	switch DomainType(test) {
+	case DomainTypeMaster, DomainTypeSlave:
+		return true
+	default:
+		return false
+	}
+}
+
+// ValidateDomainStatus validates whether or not a test string is a DomainStatus enum.
+func ValidateDomainStatus(test string) bool {
+	switch DomainStatus(test) {
+	case DomainStatusActive, DomainStatusDisabled, DomainStatusEditMode, DomainStatusHasErrors:
+		return true
+	default:
+		return false
+	}
+}
+
+// ValidateDomainRecordType validates whether or not a test string is a DomainRecordType enum.
+func ValidateDomainRecordType(test string) bool {
+	switch DomainRecordType(test) {
+	case CNAME, A, AAAA, NS, MX, TXT, SRV, PTR, CAA:
+		return true
+	default:
+		return false
+	}
 }

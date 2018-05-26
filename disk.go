@@ -2,8 +2,10 @@ package lingo
 
 import "encoding/json"
 
+// A DiskStatus is an enumeration of potential statuses a disk can be in.
 type DiskStatus string
 
+// Enum values for DiskStatus.
 const (
 	DiskStatusReady    = DiskStatus("ready")
 	DiskStatusNotReady = DiskStatus("not ready")
@@ -13,7 +15,7 @@ const (
 // A FileSystem is an enumeration of potential file systems a disk can be created with.
 type FileSystem string
 
-// The FileSystem enum values.
+// Enum values for FileSystem.
 const (
 	FileSystemRaw    = FileSystem("raw")
 	FileSystemSwap   = FileSystem("swap")
@@ -69,15 +71,17 @@ type Disker interface {
 // ValidateFileSystem validates whether or not a test string is a FileSystem.
 func ValidateFileSystem(test string) bool {
 	switch FileSystem(test) {
-	case FileSystemRaw:
-		fallthrough
-	case FileSystemSwap:
-		fallthrough
-	case FileSystemExt3:
-		fallthrough
-	case FileSystemExt4:
-		fallthrough
-	case FileSystemInitrd:
+	case FileSystemRaw, FileSystemSwap, FileSystemExt3, FileSystemExt4, FileSystemInitrd:
+		return true
+	default:
+		return false
+	}
+}
+
+// ValidateDiskStatus validates whether or not a test string is a DiskStatus.
+func ValidateDiskStatus(test string) bool {
+	switch DiskStatus(test) {
+	case DiskStatusNotReady, DiskStatusReady, DiskStatusUpdated:
 		return true
 	default:
 		return false

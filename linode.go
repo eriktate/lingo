@@ -2,9 +2,10 @@ package lingo
 
 import "encoding/json"
 
-// Status is an enum of possible instances statuses.
+// Status is an enumeration of possible instances statuses.
 type Status string
 
+// Enum values for Status.
 const (
 	StatusOffline      = Status("offline")
 	StatusBooting      = Status("booting")
@@ -16,9 +17,10 @@ const (
 	StatusMigrating    = Status("migrating")
 )
 
-// Hypervisor is an enum of possible hypervisors to be used for an instance.
+// Hypervisor is an enumeration of possible hypervisors to be used for an instance.
 type Hypervisor string
 
+// Enum values for Hypervisor.
 const (
 	HypervisorKVM = Hypervisor("kvm")
 	HypervisorXen = Hypervisor("xen")
@@ -108,6 +110,7 @@ type RebuildLinodeRequest struct {
 // A Class is an enum of possible instance classes.
 type Class string
 
+// Values for Class
 const (
 	ClassNanode   = Class("nanode")
 	ClassStandard = Class("standard")
@@ -160,4 +163,48 @@ type Linoder interface {
 	ListLinodeVolumes(id uint) ([]Volume, error)
 	ListTypes() ([]LinodeType, error)
 	ViewType(id string) (LinodeType, error)
+}
+
+// ValidateStatus validates whether or not a test string is a Status enum.
+func ValidateStatus(test string) bool {
+	switch Status(test) {
+	case StatusBooting:
+		return true
+	case StatusDeleting:
+		return true
+	case StatusMigrating:
+		return true
+	case StatusOffline:
+		return true
+	case StatusProvisioning:
+		return true
+	case StatusRebooting:
+		return true
+	case StatusRunning:
+		return true
+	case StatusShuttingDown:
+		return true
+	default:
+		return false
+	}
+}
+
+// ValidateHypervisor validates whether or not a test string is a Hypervisor enum.
+func ValidateHypervisor(test string) bool {
+	switch Hypervisor(test) {
+	case HypervisorKVM, HypervisorXen:
+		return true
+	default:
+		return false
+	}
+}
+
+// ValidateClass validates whether or not a test string is a Class enum.
+func ValidateClass(test string) bool {
+	switch Class(test) {
+	case ClassHighmem, ClassNanode, ClassStandard:
+		return true
+	default:
+		return false
+	}
 }

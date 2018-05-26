@@ -10,6 +10,7 @@ This project is under very active development and is definitely *NOT* safe for p
 - Linode Types
 - Regions
 - Volume
+- Networking
 
 # Partial APIs
 - Linode Instance
@@ -17,7 +18,6 @@ This project is under very active development and is definitely *NOT* safe for p
 - Disk
 
 # TODO APIs
-- Networking
 - LongView
 - StackScripts (?)
 - Profile (?)

@@ -147,7 +147,7 @@ func (c BalancerClient) CreateNodeBalancerConfig(req CreateBalancerConfigRequest
 		return created, errors.Wrap(err, "failed to marshal request for CreateNodeBalancerConfig")
 	}
 
-	data, err := c.api.Post(fmt.Sprintf("nodebalancers/%d/configs", req.NodeBalancerID), payload)
+	data, err := c.api.Post(fmt.Sprintf("nodebalancers/%d/configs", req.BalancerID), payload)
 	if err != nil {
 		return created, errors.Wrap(err, "failed to make request for CreateNodeBalancerConfig")
 	}
@@ -156,7 +156,7 @@ func (c BalancerClient) CreateNodeBalancerConfig(req CreateBalancerConfigRequest
 		return created, errors.Wrap(err, "failed to unmarshal CreateNodeBalancerConfig response")
 	}
 
-	created.NodeBalancerID = req.NodeBalancerID
+	created.BalancerID = req.BalancerID
 
 	return created, nil
 }
@@ -170,7 +170,7 @@ func (c BalancerClient) UpdateNodeBalancerConfig(req UpdateBalancerConfigRequest
 		return updated, errors.Wrap(err, "failed to marshal request for UpdateNodeBalancerConfig")
 	}
 
-	data, err := c.api.Put(fmt.Sprintf("nodebalancers/%d/configs/%d", req.NodeBalancerID, req.ID), payload)
+	data, err := c.api.Put(fmt.Sprintf("nodebalancers/%d/configs/%d", req.BalancerID, req.ID), payload)
 	if err != nil {
 		return updated, errors.Wrap(err, "failed to make request for UpdateNodeBalancerConfig")
 	}

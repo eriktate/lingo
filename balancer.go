@@ -89,22 +89,22 @@ const (
 
 // A CreateBalancerConfigRequest is a parameter struct for creating new node balancer configs.
 type CreateBalancerConfigRequest struct {
-	ID             uint        `json:"-"`
-	NodeBalancerID uint        `json:"-"`
-	CheckPath      string      `json:"check_path,omitempty"`
-	Protocol       Protocol    `json:"protocol,omitempty"`
-	Algorithm      Algo        `json:"algorithm,omitempty"`
-	Stickiness     Sticky      `json:"stickiness,omitempty"`
-	Check          Check       `json:"check,omitempty"`
-	CheckInterval  uint        `json:"check_interval,omitempty"`
-	CheckTimeout   uint        `json:"check_timeout,omitempty"`
-	CheckAttempts  uint        `json:"check_attempts,omitempty"`
-	Port           uint        `json:"port,omitempty"`
-	CheckBody      string      `json:"check_body,omitempty"`
-	CheckPassive   bool        `json:"check_passive"`
-	CipherSuite    CipherSuite `json:"cipher_suite,omitempty"`
-	SSLCert        string      `json:"ssl_cert,omitempty"`
-	SSLKey         string      `json:"ssl_key,omitempty"`
+	ID            uint        `json:"-"`
+	BalancerID    uint        `json:"-"`
+	CheckPath     string      `json:"check_path,omitempty"`
+	Protocol      Protocol    `json:"protocol,omitempty"`
+	Algorithm     Algo        `json:"algorithm,omitempty"`
+	Stickiness    Sticky      `json:"stickiness,omitempty"`
+	Check         Check       `json:"check,omitempty"`
+	CheckInterval uint        `json:"check_interval,omitempty"`
+	CheckTimeout  uint        `json:"check_timeout,omitempty"`
+	CheckAttempts uint        `json:"check_attempts,omitempty"`
+	Port          uint        `json:"port,omitempty"`
+	CheckBody     string      `json:"check_body,omitempty"`
+	CheckPassive  bool        `json:"check_passive"`
+	CipherSuite   CipherSuite `json:"cipher_suite,omitempty"`
+	SSLCert       string      `json:"ssl_cert,omitempty"`
+	SSLKey        string      `json:"ssl_key,omitempty"`
 }
 
 // An UpdateBalancerConfigRequest is a parameter struct for updating an existing node balancer config.
@@ -113,7 +113,7 @@ type UpdateBalancerConfigRequest CreateBalancerConfigRequest
 // A BalancerConfig represents a configuration for a node balancer.
 type BalancerConfig struct {
 	ID             uint        `json:"id"`
-	NodeBalancerID uint        `json:"-"`
+	BalancerID     uint        `json:"-"`
 	CheckPath      string      `json:"check_path"`
 	Protocol       Protocol    `json:"protocol"`
 	Algorithm      Algo        `json:"algorithm"`
@@ -174,6 +174,7 @@ type CreateNodeRequest struct {
 	BalancerID uint     `json:"-"`
 	ConfigID   uint     `json:"-"`
 	Label      string   `json:"label"`
+	Address    string   `json:"address"`
 	Weight     uint     `json:"weight,omitempty"`
 	Mode       NodeMode `json:"mode,omitempty"`
 }

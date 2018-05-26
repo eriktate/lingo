@@ -9,7 +9,7 @@ import (
 
 func Test_ListImages(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewImageClient(api)
 
 	if _, err := client.ListImages(); err != nil {
@@ -25,7 +25,7 @@ func Test_ListImages(t *testing.T) {
 
 func Test_Image(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewImageClient(api)
 	linodeClient := lingo.NewLinodeClient(api)
 	diskClient := lingo.NewDiskClient(api)

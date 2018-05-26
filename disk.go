@@ -49,8 +49,8 @@ type CreateDiskRequest struct {
 
 // An UpdateDiskRequest wraps up the data that can be updated on a Linode Disk.
 type UpdateDiskRequest struct {
+	ID         uint       `json:"-"`
 	LinodeID   uint       `json:"-"`
-	DiskID     uint       `json:"id"`
 	Label      string     `json:"label,omitempty"`
 	FileSystem FileSystem `json:"filesystem,omitempty"`
 }
@@ -64,4 +64,22 @@ type Disker interface {
 	DeleteDisk(linodeID, diskID uint) error
 	ResetDiskRootPassword(linodeID, diskID uint, password string) (Disk, error)
 	ResizeDisk(linodeID, diskID, size uint) (Disk, error)
+}
+
+// ValidateFileSystem validates whether or not a test string is a FileSystem.
+func ValidateFileSystem(test string) bool {
+	switch FileSystem(test) {
+	case FileSystemRaw:
+		fallthrough
+	case FileSystemSwap:
+		fallthrough
+	case FileSystemExt3:
+		fallthrough
+	case FileSystemExt4:
+		fallthrough
+	case FileSystemInitrd:
+		return true
+	default:
+		return false
+	}
 }

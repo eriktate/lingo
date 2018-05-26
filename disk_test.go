@@ -11,11 +11,11 @@ import (
 
 func Test_Disks(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewDiskClient(api)
 	linodeClient := lingo.NewLinodeClient(api)
 
-	createLinode := lingo.NewLinode{
+	createLinode := lingo.CreateLinodeRequest{
 		Region:   "us-east-1a",
 		Type:     "g5-standard-2",
 		Image:    "linode/debian9",
@@ -64,7 +64,7 @@ func Test_Disks(t *testing.T) {
 
 	updateReq := lingo.UpdateDiskRequest{
 		LinodeID: testLinode.ID,
-		DiskID:   disk1.ID,
+		ID:       disk1.ID,
 		Label:    "This is a meh label",
 	}
 
@@ -83,11 +83,11 @@ func Test_Disks(t *testing.T) {
 
 func Test_ResizeDisk(t *testing.T) {
 	apiKey := os.Getenv("LINODE_API_KEY")
-	api := lingo.NewAPIClient(apiKey)
+	api := lingo.NewAPIClient(apiKey, nil)
 	client := lingo.NewDiskClient(api)
 	linodeClient := lingo.NewLinodeClient(api)
 
-	createLinode := lingo.NewLinode{
+	createLinode := lingo.CreateLinodeRequest{
 		Region:   "us-east-1a",
 		Type:     "g5-standard-2",
 		Image:    "linode/debian9",

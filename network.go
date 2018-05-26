@@ -75,3 +75,13 @@ type Networker interface {
 	ListIPv6Pools() ([]IPv6Range, error)
 	ListIPv6Ranges() ([]IPv6Pool, error)
 }
+
+// ValidateAddressType validates whether or not a test string is an AddressType enum.
+func ValidateAddressType(test string) bool {
+	switch AddressType(test) {
+	case IPv4, IPv6, Pool, Range:
+		return true
+	default:
+		return false
+	}
+}
